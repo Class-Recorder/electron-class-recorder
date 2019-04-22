@@ -1,5 +1,17 @@
-<div class="container">
-  <h1 class="title">
-    {{ 'PAGES.HOME.TITLE' | translate }}
-  </h1>
+<div class="content full-screen-card centered-text">
+  <h1 class="title mat-display-1">Select a folder for your videos</h1>
+  <mat-card id="upload-form">
+    <form class="form-column" [formGroup]="formGroup">
+        <mat-form-field>
+          <input matInput placeholder="Directory where videos will be stored" formControlName="videosFolder">
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input matInput placeholder="Directory where data information will be stored" formControlName="databaseFolder">
+        </mat-form-field>
+      <br>
+      <button [disabled]="!formGroup.valid"  mat-raised-button color="primary" (click)="onSubmit()">Start</button>
+      <br>
+    </form>
+  </mat-card>
 </div>

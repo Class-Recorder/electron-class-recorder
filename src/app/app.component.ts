@@ -1,26 +1,39 @@
-import { Component } from '@angular/core';
-import { ElectronService } from './providers/electron.service';
-import { TranslateService } from '@ngx-translate/core';
-import { AppConfig } from '../environments/environment';
+import { Component, OnInit } from '@angular/core';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { ThemeService } from './providers/theme.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  constructor(public electronService: ElectronService,
-    private translate: TranslateService) {
+export class AppComponent implements OnInit {
 
-    translate.setDefaultLang('en');
-    console.log('AppConfig', AppConfig);
 
-    if (electronService.isElectron()) {
-      console.log('Mode electron');
-      console.log('Electron ipcRenderer', electronService.ipcRenderer);
-      console.log('NodeJS childProcess', electronService.childProcess);
-    } else {
-      console.log('Mode web');
-    }
+  currentTheme: string;
+
+  constructor(
+      private _overlayContainer: OverlayContainer,
+      private _themeService: ThemeService,
+  ) {}
+
+  ngOnInit() {
+      this.currentTheme = 'theme-dark';
+      this.themeDark();
   }
+
+  themeDark() {
+      this._overlayContainer.getContainerElement().classList.add('theme-dark');
+      document.querySelector('html').style.background = '#818181';
+      this.currentTheme = 'theme-dark';
+      this._themeService.setTheme(this.currentTheme);
+  }
+
+  themeIndigoPink() {
+      this._overlayContainer.getContainerElement().classList.add('indigo-pink');
+      document.querySelector('html').style.background = '#c2d6d6';
+      this.currentTheme = 'indigo-pink';
+      this._themeService.setTheme(this.currentTheme);
+  }
+
 }

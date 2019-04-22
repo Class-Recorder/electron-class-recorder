@@ -1,6 +1,9 @@
 {
-  "productName": "angular-electron",
-  "asar": false,
+  "productName": "Class-Recorder",
+  "asarUnpack": [
+    "dependencies/**",
+    "executable/**"
+  ],
   "directories": {
     "output": "release/"
   },

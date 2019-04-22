@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<body>
+    <div [class]="currentTheme">
+        <nav id="main-nav" flex>
+            <mat-toolbar color="primary">
+                <div class="nav-left">
+                    <button mat-button><mat-icon id="logo-navbar" aria-hidden="true">camera</mat-icon>Class Recorder</button>
+                </div>
+                <span class="example-spacer"></span>
+                <div class="nav-right">
+                    <button mat-button [matMenuTriggerFor]="themes">Themes</button>
+                    <mat-menu #themes="matMenu">
+                            <button mat-menu-item (click)="themeDark()">Dark</button>
+                            <button mat-menu-item (click)="themeIndigoPink()">Indigo Pink</button>
+                    </mat-menu>
+                </div>
+            </mat-toolbar>
+        </nav>
+        <router-outlet></router-outlet>
+    </div>
+</body>

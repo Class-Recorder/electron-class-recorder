@@ -1,15 +1,16 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { SpringBackendRunner } from './src/main/spring-backend-runner';
+import { SpringBackendRunner } from './src-main/spring-backend-runner';
 
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-function runSpringServer() {
-  let springRunner: SpringBackendRunner = new SpringBackendRunner;
-  springRunner.printJvmLocation();
+async function runSpringServer() {
+  const springRunner: SpringBackendRunner = new SpringBackendRunner(__dirname);
+  springRunner.toString();
+  await springRunner.executeJava('C:\\Users\\Darwin\\Videos\\Class-recorder', 'C:\\Users\\Darwin\\database');
 }
 
 function createWindow() {
@@ -32,10 +33,10 @@ function createWindow() {
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
     });
-    win.loadURL('http://localhost:4200');
+    win.loadURL('http://localhost:8000');
   } else {
     win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html'),
+      pathname: path.join(__dirname, 'http://localhost:8000'),
       protocol: 'file:',
       slashes: true
     }));
@@ -55,13 +56,17 @@ function createWindow() {
 
 }
 
+async function main() {
+
+}
+
 try {
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  app.on('ready', () => {
-    runSpringServer();
+  app.on('ready', async () => {
+    await runSpringServer();
     createWindow();
   });
 

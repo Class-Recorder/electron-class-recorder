@@ -1,7 +1,95 @@
 /* You can add global styles to this file, and also import other style files */
-html, body {
-  margin: 0;
-  padding: 0;
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
 
-  height: 100%;
+@include mat-core();
+
+@import './themes/class-recorder-theme';
+@import './themes/light-blue-background';
+@import "m-modified.css";
+
+.html {
+    background-color: lightgrey;
+}
+
+//Dark theme
+.theme-dark{
+    @include angular-material-theme($anms-class-recorder-dark);
+}
+
+.theme-dark .mat-form-field {
+    width: 100%
+}
+
+//Indigo Theme
+.indigo-pink{
+    @include angular-material-theme($class-recorder-indigo);
+}
+
+.indigo-pink .mat-form-field {
+    width: 100%
+}
+
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 100px;
+}
+
+.content{
+    margin-top: 80px;
+}
+
+.align-middle {
+    margin-top: 10%;
+}
+
+.centered-text{
+    text-align: center;
+}
+
+.right-text {
+    text-align: right;
+    margin-right: 5%;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-column > * {
+    width: 100%;
+}
+
+.login-register-form {
+    margin-left:5%;
+    margin-right: 5%
+}
+
+.full-screen-card{
+    margin-left: 20%;
+    margin-right: 20%
+}
+
+.done-icon{
+    padding-left: 50px;
+    color: green;
+}
+
+.material-button {
+    top: auto;
+    right: 20px;
+    bottom: 20px;
+    width: 100px !important;
+    height: 100px !important;
+    left: auto;
+    position: fixed !important;
+}
+
+.material-button-icon {
+    font-size: 50px !important;
+    margin-right: 25px;
+    margin-bottom: 25px;
 }
