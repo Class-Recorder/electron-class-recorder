@@ -124,7 +124,7 @@ async function downloadClassRecorderRelease() {
     const projectRoot = process.cwd();
     const execDir = path.join(projectRoot, 'executable');
     const jarName = 'class-recorder-pc.jar';
-    const url = `https://github.com/Class-Recorder/class-recorder/releases/download/0.9.1/${jarName}`;
+    const url = `https://github.com/Class-Recorder/class-recorder/releases/download/v0.9.2/${jarName}`;
     const jarFile = path.join(execDir, jarName);
     await del([execDir]);
     await downloadResource('Class-recorder', url, jarFile, execDir);
