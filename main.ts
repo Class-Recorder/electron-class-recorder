@@ -10,7 +10,7 @@ serve = args.some(val => val === '--serve');
 async function runSpringServer() {
   const springRunner: SpringBackendRunner = new SpringBackendRunner(__dirname);
   springRunner.toString();
-  await springRunner.executeJava('C:\\Users\\Darwin\\Videos\\Class-recorder', 'C:\\Users\\Darwin\\database');
+  await springRunner.executeJava('/home/carlos/Vídeos/crecorder', '/home/carlos/data-class-recorder/data-class-recorder');
 }
 
 function createWindow() {

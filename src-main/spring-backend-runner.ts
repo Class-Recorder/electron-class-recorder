@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import getAppDataPath from 'appdata-path';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Utils } from './utils';
 
 export class SpringBackendRunner {
 
@@ -39,20 +38,20 @@ export class SpringBackendRunner {
     private modifyApplicationProperties(videosFolder: string, databaseDir: string) {
         let tempFolder = path.join(this.APP_SYSTEM_FOLDER, 'temp');
         let outputFfmpegFolder = path.join(this.APP_SYSTEM_FOLDER, 'outputffmpeg');
-        let applicationProperties = fs.readFileSync(this.APP_PROPERTIES_LOCATION_TEMPLATE).toString();
+        let applicationProperties = fs.readFileSync(this.APP_PROPERTIES_LOCATION_TEMPLATE, {encoding: 'utf8'}).toString();
         applicationProperties = applicationProperties.replace('${databaseDir}', this.convertToWindowsDir(databaseDir))
             .replace('${ffmpegDirectory}', `${this.convertToWindowsDir(this.FFMPEG_LOCATION)}`)
             .replace('${videos_folder}', `${this.convertToWindowsDir(videosFolder)}`)
             .replace('${temp_folder}', `${this.convertToWindowsDir(tempFolder)}`)
             .replace('${output_ffmpeg}', `${this.convertToWindowsDir(outputFfmpegFolder)}`);
         console.log(applicationProperties);
-        fs.writeFileSync(this.APP_PROPERTIES_LOCATION, applicationProperties);
+        fs.writeFileSync(this.APP_PROPERTIES_LOCATION, applicationProperties, {encoding: 'utf8'});
     }
 
     public executeJava(videosFolder: string, dataFolder: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.modifyApplicationProperties(videosFolder, dataFolder);
-            this.serverProcess = spawn(this.JVM_LOCATION, ['-jar', this.JAVA_SERVER_LOCATION], {
+            this.serverProcess = spawn(this.JVM_LOCATION, ['-Dfile.encoding=UTF-8', '-jar', this.JAVA_SERVER_LOCATION], {
                 cwd: this.SERVER_LOCATION
             });
 
