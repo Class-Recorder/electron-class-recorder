@@ -2,13 +2,27 @@
   <h1 class="title mat-display-1">Select a folder for your videos</h1>
   <mat-card id="upload-form">
     <form class="form-column" [formGroup]="formGroup">
-        <mat-form-field>
-          <input matInput placeholder="Directory where videos will be stored" formControlName="videosFolder">
-        </mat-form-field>
+        <div class="row">
+          <div class="col s12 m12 l10">
+            <mat-form-field>
+                <input matInput placeholder="Directory where videos will be stored" formControlName="videosFolder" [readonly]=true>
+            </mat-form-field>
+          </div>
+          <div class="input-button col s12 m12 l2">
+              <button mat-raised-button color="primary" (click)="selectFolderVideos()">Select folder</button>
+          </div>
+        </div>
         <br>
-        <mat-form-field>
-          <input matInput placeholder="Directory where data information will be stored" formControlName="databaseFolder">
-        </mat-form-field>
+        <div class="row">
+          <div class="col s12 m12 l10">
+            <mat-form-field>
+                <input matInput placeholder="Directory where data will be stored" formControlName="databaseFolder" [readonly]=true>
+            </mat-form-field>
+          </div>
+          <div class="input-button col s12 m12 l2">
+              <button mat-raised-button color="primary" (click)="selectDatabaseFolder()">Select folder</button>
+          </div>
+        </div>
       <br>
       <button [disabled]="!formGroup.valid"  mat-raised-button color="primary" (click)="onSubmit()">Start</button>
       <br>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ThemeService } from './providers/theme.service';
+import { SPINNER } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,13 @@ export class AppComponent implements OnInit {
 
 
   currentTheme: string;
+  videosDirectory: string;
+  dataDirectory: string;
+  spinner = SPINNER.threeStrings;
 
   constructor(
       private _overlayContainer: OverlayContainer,
-      private _themeService: ThemeService,
+      private _themeService: ThemeService
   ) {}
 
   ngOnInit() {

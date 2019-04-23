@@ -7,12 +7,6 @@ let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-async function runSpringServer() {
-  const springRunner: SpringBackendRunner = new SpringBackendRunner(__dirname);
-  springRunner.toString();
-  await springRunner.executeJava('/home/carlos/Vídeos/crecorder', '/home/carlos/data-class-recorder/data-class-recorder');
-}
-
 function createWindow() {
 
   const electronScreen = screen;
@@ -33,10 +27,10 @@ function createWindow() {
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
     });
-    win.loadURL('http://localhost:8000');
+    win.loadURL('http://localhost:4200');
   } else {
     win.loadURL(url.format({
-      pathname: path.join(__dirname, 'http://localhost:8000'),
+      pathname: path.join(__dirname, 'dist/index'),
       protocol: 'file:',
       slashes: true
     }));
@@ -66,8 +60,8 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', async () => {
-    await runSpringServer();
     createWindow();
+    const springRunner: SpringBackendRunner = new SpringBackendRunner(__dirname, win);
   });
 
   // Quit when all windows are closed.

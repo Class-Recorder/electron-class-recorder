@@ -23,6 +23,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { ThemeService } from './providers/theme.service';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -50,6 +51,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatInputModule,
     CdkTreeModule,
     ReactiveFormsModule,
+    NgxUiLoaderModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

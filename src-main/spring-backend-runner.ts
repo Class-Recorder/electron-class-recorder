@@ -3,6 +3,9 @@ import * as _ from 'lodash';
 import getAppDataPath from 'appdata-path';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { Configuration } from './configuration';
+import { BrowserWindow } from 'electron';
+const ipc = require('electron').ipcMain;
 
 export class SpringBackendRunner {
 
@@ -12,47 +15,62 @@ export class SpringBackendRunner {
     private APP_PROPERTIES_LOCATION_TEMPLATE: string;
     private APP_PROPERTIES_LOCATION: string;
     private APP_SYSTEM_FOLDER: string;
+    private APP_PREVIOUS_DATA_LOCATION: string;
     private FFMPEG_LOCATION: string;
     private serverProcess: ChildProcess;
 
-    public constructor(applicationDirectory: string) {
+    public constructor(applicationDirectory: string, win: BrowserWindow) {
         const unpackedAsarDirectory = this.urlAsarUnpacked(applicationDirectory);
         if (process.platform === 'win32') {
             this.JVM_LOCATION = `${unpackedAsarDirectory}\\dependencies\\jvm\\bin\\java.exe`;
             this.JAVA_SERVER_LOCATION = `${unpackedAsarDirectory}\\executable\\class-recorder-pc.jar`;
             this.SERVER_LOCATION = `${unpackedAsarDirectory}\\executable`;
             this.APP_PROPERTIES_LOCATION_TEMPLATE = `${unpackedAsarDirectory}\\executable\\application.properties.template`;
-            this.APP_PROPERTIES_LOCATION = `${unpackedAsarDirectory}\\executable\\application.properties`;
             this.FFMPEG_LOCATION = `${unpackedAsarDirectory}\\dependencies\\ffmpeg.exe`;
         } else {
             this.JVM_LOCATION = `${unpackedAsarDirectory}/dependencies/jvm/bin/java`;
             this.JAVA_SERVER_LOCATION = `${unpackedAsarDirectory}/executable/class-recorder-pc.jar`;
             this.SERVER_LOCATION = `${unpackedAsarDirectory}/executable`;
             this.APP_PROPERTIES_LOCATION_TEMPLATE = `${unpackedAsarDirectory}/executable/application.properties.template`;
-            this.APP_PROPERTIES_LOCATION = `${unpackedAsarDirectory}/executable/application.properties`;
             this.FFMPEG_LOCATION = `${unpackedAsarDirectory}/dependencies/ffmpeg`;
         }
         this.APP_SYSTEM_FOLDER = getAppDataPath('class-recorder-data');
+        this.APP_PROPERTIES_LOCATION = path.join(this.APP_SYSTEM_FOLDER, 'application.properties');
+        this.APP_PREVIOUS_DATA_LOCATION = path.join(this.APP_SYSTEM_FOLDER, 'previous_data.json');
+
+        if (!fs.existsSync(this.APP_SYSTEM_FOLDER)) {
+            fs.mkdirSync(this.APP_SYSTEM_FOLDER);
+        }
+
+        ipc.on('load-previous-data', (event, arg) => {
+            event.returnValue = this.loadConfiguration();
+        });
+
+        ipc.on('save-data-and-run-server', async (event, arg: Configuration) => {
+            this.saveConfiguration(arg);
+            event.returnValue = true;
+            await this.executeJava(arg);
+            win.loadURL('http://localhost:8000');
+        });
     }
 
-    private modifyApplicationProperties(videosFolder: string, databaseDir: string) {
+    private modifyApplicationProperties(data: Configuration) {
         let tempFolder = path.join(this.APP_SYSTEM_FOLDER, 'temp');
         let outputFfmpegFolder = path.join(this.APP_SYSTEM_FOLDER, 'outputffmpeg');
         let applicationProperties = fs.readFileSync(this.APP_PROPERTIES_LOCATION_TEMPLATE, {encoding: 'utf8'}).toString();
-        applicationProperties = applicationProperties.replace('${databaseDir}', this.convertToWindowsDir(databaseDir))
+        applicationProperties = applicationProperties.replace('${databaseDir}', this.convertToWindowsDir(data.databaseFolder))
             .replace('${ffmpegDirectory}', `${this.convertToWindowsDir(this.FFMPEG_LOCATION)}`)
-            .replace('${videos_folder}', `${this.convertToWindowsDir(videosFolder)}`)
+            .replace('${videos_folder}', `${this.convertToWindowsDir(data.videosFolder)}`)
             .replace('${temp_folder}', `${this.convertToWindowsDir(tempFolder)}`)
             .replace('${output_ffmpeg}', `${this.convertToWindowsDir(outputFfmpegFolder)}`);
-        console.log(applicationProperties);
         fs.writeFileSync(this.APP_PROPERTIES_LOCATION, applicationProperties, {encoding: 'utf8'});
     }
 
-    public executeJava(videosFolder: string, dataFolder: string): Promise<void> {
+    public executeJava(data: Configuration): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.modifyApplicationProperties(videosFolder, dataFolder);
+            this.modifyApplicationProperties(data);
             this.serverProcess = spawn(this.JVM_LOCATION, ['-Dfile.encoding=UTF-8', '-jar', this.JAVA_SERVER_LOCATION], {
-                cwd: this.SERVER_LOCATION
+                cwd: this.APP_SYSTEM_FOLDER
             });
 
             this.serverProcess.stderr.on('data', (data) => {
@@ -85,6 +103,17 @@ export class SpringBackendRunner {
         return dir.replace(/\\/g, '\\\\');
     }
 
+    private saveConfiguration(data: Configuration) {
+        fs.writeJsonSync(this.APP_PREVIOUS_DATA_LOCATION, data);
+    }
+
+    private loadConfiguration(): Configuration {
+        if (fs.existsSync(this.APP_PREVIOUS_DATA_LOCATION)) {
+           return fs.readJsonSync(this.APP_PREVIOUS_DATA_LOCATION);
+        }
+        return null;
+    }
+
     public toString() {
         console.log(this.JVM_LOCATION);
         console.log(this.APP_PROPERTIES_LOCATION);
@@ -93,6 +122,7 @@ export class SpringBackendRunner {
         console.log(this.FFMPEG_LOCATION);
         console.log(this.JAVA_SERVER_LOCATION);
         console.log(this.SERVER_LOCATION);
+        console.log(this.APP_PREVIOUS_DATA_LOCATION);
     }
 
 }
