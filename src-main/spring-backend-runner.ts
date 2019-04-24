@@ -69,7 +69,7 @@ export class SpringBackendRunner {
     public executeJava(data: Configuration): Promise<void> {
         return new Promise((resolve, reject) => {
             this.modifyApplicationProperties(data);
-            this.serverProcess = spawn(this.JVM_LOCATION, ['-Dfile.encoding=UTF-8', '-jar', this.JAVA_SERVER_LOCATION], {
+            this.serverProcess = spawn(this.JVM_LOCATION, ['-jar', this.JAVA_SERVER_LOCATION], {
                 cwd: this.APP_SYSTEM_FOLDER
             });
 

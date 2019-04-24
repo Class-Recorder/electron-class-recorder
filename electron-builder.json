@@ -5,7 +5,8 @@
     "executable/**"
   ],
   "directories": {
-    "output": "release/"
+    "output": "release/",
+    "buildResources": "buildResources"
   },
     "files": [
         "**/*",
@@ -24,7 +25,6 @@
         "!tslint.json"
     ],
   "win": {
-    "icon": "icons",
     "target": [
       "portable",
       "nsis",
