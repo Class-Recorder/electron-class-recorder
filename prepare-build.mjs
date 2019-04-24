@@ -8,6 +8,7 @@ import decompressTarGz from 'decompress-targz';
 import decompress from 'decompress';
 import decompressUnzip from 'decompress-unzip';
 import del from 'del';
+import axios from 'axios';
 
 function downloadResource(resourceName, resourceUrl, resourcePath, destination) {
     return new Promise((resolve, reject) => {
@@ -91,8 +92,8 @@ async function prepareDependencies() {
         ffmpegFileVersion = 'ffmpeg-4.1-win-64.zip';
         urlFfmpeg = `https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.1/${ffmpegFileVersion}`;
     } else if (process.platform === 'linux') {
-        ffmpegFileVersion = 'ffmpeg-4.1-linux-64.zip';
-        urlFfmpeg = `https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.1/${ffmpegFileVersion}`;
+        ffmpegFileVersion = 'ffmpeg.zip';
+        urlFfmpeg = `https://github.com/Class-Recorder/ffmpeg-linux-amd64-crecorder/releases/download/ffmpeg-crecorder/${ffmpegFileVersion}`;
     }
     const ffmpegFile = path.resolve(destDir, ffmpegFileVersion);
 
@@ -120,13 +121,19 @@ async function prepareDependencies() {
     }
 }
 
+async function getLatestVersionClassRecorder() {
+    return await axios.get('https://api.github.com/repos/class-recorder/class-recorder/releases/latest');
+}
+
 async function downloadClassRecorderRelease() {
+    const latestVersion = (await getLatestVersionClassRecorder()).data.tag_name;
+    console.log('Downloading version of Class Recorder' + latestVersion);
     const projectRoot = process.cwd();
     const execDir = path.join(projectRoot, 'executable');
     const jarName = 'class-recorder-pc.jar';
-    const url = `https://github.com/Class-Recorder/class-recorder/releases/download/v0.9.2/${jarName}`;
+    const url = `https://github.com/Class-Recorder/class-recorder/releases/download/${latestVersion}/${jarName}`;
     const jarFile = path.join(execDir, jarName);
-    await del([execDir]);
+    await del([jarFile]);
     await downloadResource('Class-recorder', url, jarFile, execDir);
 }
 

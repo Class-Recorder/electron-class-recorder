@@ -24,21 +24,25 @@
         "!tslint.json"
     ],
   "win": {
-    "icon": "dist",
+    "icon": "icons",
     "target": [
-      "portable"
+      "portable",
+      "nsis",
+      "msi"
     ]
   },
   "mac": {
-    "icon": "dist",
+    "icon": "icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist",
+    "icon": "icons",
     "target": [
-      "AppImage"
+      "AppImage",
+      "deb",
+      "zip"
     ]
   }
 }

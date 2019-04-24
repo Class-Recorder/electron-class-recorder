@@ -6,6 +6,7 @@ import { SpringBackendRunner } from './src-main/spring-backend-runner';
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
+let springRunner: SpringBackendRunner;
 
 function createWindow() {
 
@@ -30,13 +31,13 @@ function createWindow() {
     win.loadURL('http://localhost:4200');
   } else {
     win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index'),
+      pathname: path.join(__dirname, 'dist/index.html'),
       protocol: 'file:',
       slashes: true
     }));
   }
 
-  if (serve) {
+  if(serve) {
     win.webContents.openDevTools();
   }
 
@@ -46,6 +47,7 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
+    springRunner.killServer();
   });
 
 }
@@ -61,7 +63,7 @@ try {
   // Some APIs can only be used after this event occurs.
   app.on('ready', async () => {
     createWindow();
-    const springRunner: SpringBackendRunner = new SpringBackendRunner(__dirname, win);
+    springRunner = new SpringBackendRunner(__dirname, win);
   });
 
   // Quit when all windows are closed.

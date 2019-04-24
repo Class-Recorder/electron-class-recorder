@@ -50,7 +50,7 @@ export class SpringBackendRunner {
             this.saveConfiguration(arg);
             event.returnValue = true;
             await this.executeJava(arg);
-            win.loadURL('http://localhost:8000');
+            win.loadURL('http://localhost:37132');
         });
     }
 
@@ -114,15 +114,8 @@ export class SpringBackendRunner {
         return null;
     }
 
-    public toString() {
-        console.log(this.JVM_LOCATION);
-        console.log(this.APP_PROPERTIES_LOCATION);
-        console.log(this.APP_PROPERTIES_LOCATION_TEMPLATE);
-        console.log(this.APP_SYSTEM_FOLDER);
-        console.log(this.FFMPEG_LOCATION);
-        console.log(this.JAVA_SERVER_LOCATION);
-        console.log(this.SERVER_LOCATION);
-        console.log(this.APP_PREVIOUS_DATA_LOCATION);
+    public killServer() {
+        this.serverProcess.kill();
     }
 
 }
