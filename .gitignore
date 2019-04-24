@@ -14,6 +14,7 @@ src/**/*.js
 # dependencies
 /node_modules
 /dependencies
+/executable/class-recorder-pc.jar
 
 # IDEs and editors
 /.idea
