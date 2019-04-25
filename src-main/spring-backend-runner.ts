@@ -117,5 +117,8 @@ export class SpringBackendRunner {
     public killServer() {
         this.serverProcess.kill();
     }
+  
+    public gitAttributesTest() {
+    }
 
 }
